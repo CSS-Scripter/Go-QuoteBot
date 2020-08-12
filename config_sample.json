@@ -1,0 +1,6 @@
+{
+    "prefix": "[PREFIX]",
+    "authToken": "[BOT TOKEN HERE]",
+    "hostname": "[QUOTESITELOCATION]",
+    "port": 0
+}
