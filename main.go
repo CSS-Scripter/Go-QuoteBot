@@ -112,7 +112,7 @@ func createQuoteRequestBody(by string, message string) []byte {
 	quote := Quote{
 		By: by,
 		Message: message,
-		Year: string(year),
+		Year: fmt.Sprintf("%d", year),
 	}
 
 	requestBody, _ := json.Marshal(quote)
