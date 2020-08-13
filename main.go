@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"bytes"
 	"time"
+	"encoding/json"
 )
 
 type Configuration struct {
@@ -18,6 +19,12 @@ type Configuration struct {
 	AuthToken string
 	Hostname string
 	Port int
+}
+
+type Quote struct {
+	Message string `json:"message"`
+	By string `json:"by"`
+	Year string `json:"year"`
 }
 
 var config = Configuration{}
@@ -84,7 +91,7 @@ func onMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 		resp, err := http.Post(
 			targetAddress, 
 			"application/json", 
-			bytes.NewBuffer([]byte(requestBody)))
+			bytes.NewBuffer(requestBody))
 
 		check(err)
 
@@ -100,12 +107,14 @@ func checkMessageForCommand(message string, command string) bool {
 	return strings.HasPrefix(message, fmt.Sprintf("%s%s", config.Prefix, command))
 }
 
-func createQuoteRequestBody(by string, quote string) string {
+func createQuoteRequestBody(by string, message string) []byte {
 	year, _, _ := time.Now().Date()
-	return fmt.Sprintf(
-		`{
-			"message":"%s",
-			"by":"%s",
-			"year":"%d"
-		}`, quote, by, year)
+	quote := Quote{
+		By: by,
+		Message: message,
+		Year: string(year),
+	}
+
+	requestBody, _ := json.Marshal(quote)
+	return requestBody
 }
