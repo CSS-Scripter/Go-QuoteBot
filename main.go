@@ -61,12 +61,7 @@ func onMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 	content := message.ContentWithMentionsReplaced()
 
 	if (checkMessageForCommand(content, "quote")) {
-		session.ChannelMessageSend(message.ChannelID, "I'm currently fucking around with the bot, it'l be back later on or something, I dunno")
-		return
-	}
-
-	if (checkMessageForCommand(content, "easy")) {
-		messageContent := strings.TrimPrefix(content, fmt.Sprintf("%seasy ", config.Prefix))
+		messageContent := strings.TrimPrefix(content, fmt.Sprintf("%squote ", config.Prefix))
 		quoteAndBy := strings.SplitAfter(messageContent, "-")
 		
 		if (len(quoteAndBy) <= 1) {
