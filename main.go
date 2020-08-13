@@ -45,7 +45,6 @@ func main() {
 func initConfig() {
 	err := gonfig.GetConf("./config.json", &config)
 	check(err)
-	fmt.Println(config.AuthToken)
 }
 
 func check(err error) {
@@ -67,7 +66,7 @@ func onMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 
 	if (checkMessageForCommand(content, "easy")) {
-		messageContent := strings.TrimPrefix(content, "!easy ")
+		messageContent := strings.TrimPrefix(content, fmt.Sprintf("%seasy ", config.Prefix))
 		quoteAndBy := strings.SplitAfter(messageContent, "-")
 		
 		if (len(quoteAndBy) <= 1) {
@@ -85,17 +84,20 @@ func onMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 		by = strings.TrimPrefix(by, "@")
 
 		requestBody := createQuoteRequestBody(by, quote)
+		targetAddress := fmt.Sprintf("http://%s:%d/%s/new", config.Hostname, config.Port, message.GuildID)
 
 		resp, err := http.Post(
-			fmt.Sprintf("http://%s:%d/%s/new", config.Hostname, config.Port, message.GuildID), 
+			targetAddress, 
 			"application/json", 
 			bytes.NewBuffer([]byte(requestBody)))
 
 		check(err)
 
-		fmt.Println(resp)
-
-		session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%s | %s", quote, by))
+		if (resp.Status == "200 OK") {
+			session.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%s | %s", quote, by))
+		} else {
+			session.ChannelMessageSend(message.ChannelID, "Looks like something went wrong! Try again later!")
+		}
 	}
 }
 
@@ -107,7 +109,7 @@ func createQuoteRequestBody(by string, quote string) string {
 	year, _, _ := time.Now().Date()
 	return fmt.Sprintf(
 		`{
-			"quote":"%s",
+			"message":"%s",
 			"by":"%s",
 			"year":"%d"
 		}`, quote, by, year)
