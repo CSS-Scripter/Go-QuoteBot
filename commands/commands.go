@@ -15,5 +15,9 @@ func GetCommands() []Command {
 			Activation: "quote",
 			Action:     Quote,
 		},
+		{
+			Activation: "site",
+			Action:     Site,
+		},
 	}
 }
