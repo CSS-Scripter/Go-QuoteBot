@@ -9,9 +9,9 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"./commands"
-	"./config"
-	"./utils"
+	"app/commands"
+	"app/config"
+	"app/utils"
 )
 
 func main() {

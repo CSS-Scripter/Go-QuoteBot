@@ -10,8 +10,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"../config"
-	"../utils"
+	"app/config"
+	"app/utils"
 )
 
 type quoteStruct struct {

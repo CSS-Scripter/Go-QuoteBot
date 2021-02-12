@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/tkanos/gonfig"
 
-	"../utils"
+	"app/utils"
 )
 
 type configuration struct {
